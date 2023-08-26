@@ -16,17 +16,8 @@ public class Supplier {
         return this.name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public String getPIVA() {
         return this.pIVA;
     }
-
-    public void setPIVA(final String pIVA) {
-        this.pIVA = pIVA;
-    }
-
-
+    
 }

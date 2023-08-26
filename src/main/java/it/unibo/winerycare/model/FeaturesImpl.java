@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 
 import it.unibo.winerycare.db.Supplier;
 import it.unibo.winerycare.db.WineBottle;
@@ -232,7 +232,7 @@ public class FeaturesImpl implements Features {
                                             result.getString("Cognome"),
                                             Utils.sqlDateToDate(result.getDate("Data_di_nascita")),
                                             result.getString("Indirizzo"),
-                                            result.getString("Id")
+                                            result.getString("Id_operaio")
                 ));
             }
             return workers;
@@ -249,6 +249,7 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(1, type);
             final ResultSet result = statement.executeQuery();
+            result.next();
             return result.getDouble("Prezzo_di_vendita");
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
@@ -267,6 +268,7 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(1, product);
             final ResultSet result = statement.executeQuery();
+            result.next();
             return new Supplier(result.getString("Nome"), result.getString("Partita_IVA"));
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
@@ -281,6 +283,7 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setInt(1, year);
             final ResultSet result = statement.executeQuery();
+            result.next();
             return result.getDouble("SUM(Capacita)");
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
@@ -295,6 +298,7 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setInt(1, year);
             final ResultSet result = statement.executeQuery();
+            result.next();
             return result.getDouble("SUM(Peso)");
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
@@ -313,6 +317,7 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setInt(1, year);
             final ResultSet result = statement.executeQuery();
+            result.next();
             return result.getString("tipologia");
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
@@ -320,14 +325,18 @@ public class FeaturesImpl implements Features {
     }
 
     @Override
-    public Integer getDaysLeft() {
+    public Optional<Integer> getDaysLeft() {
         final String query = "SELECT DATEDIFF(f.Fine,CURRENT_DATE())\n" + //
                     "FROM fasi_di_produzione f\n" + //
                     "WHERE f.Nome = 'fermentazione' AND f.Inizio < CURRENT_DATE() \n" + //
-                    "AND f.Fine > CURRENT_DATE(";
+                    "AND f.Fine > CURRENT_DATE()";
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             final ResultSet result = statement.executeQuery();
-            return result.getInt("DATEDIFF(f.Fine,CURRENT_DATE())");
+            boolean flag = result.next();
+            if(flag){
+                return Optional.of(result.getInt("DATEDIFF(f.Fine,CURRENT_DATE())"));
+            }
+            return Optional.empty();
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
         }

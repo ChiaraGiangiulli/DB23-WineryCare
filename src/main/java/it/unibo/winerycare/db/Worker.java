@@ -22,40 +22,24 @@ public class Worker {
         return this.name;
     }
 
-    public void setName(final String nome) {
-        this.name = nome;
-    }
 
     public String getSurname() {
         return this.surname;
     }
 
-    public void setSurname(final String surname) {
-        this.surname = surname;
-    }
 
     public java.util.Date getDateOfBirth() {
         return this.dateOfBirth;
     }
 
-    public void setDateOfBirth(final java.util.Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
 
     public String getAddress() {
         return this.address;
     }
 
-    public void setAddress(final String address) {
-        this.address = address;
-    }
 
     public String getId() {
         return this.id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
     }
 
 }

@@ -1,6 +1,7 @@
 package it.unibo.winerycare.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import it.unibo.winerycare.db.Supplier;
 import it.unibo.winerycare.db.WineBottle;
@@ -24,5 +25,5 @@ public interface Features {
     Double getAmountOfSoldWine(int year);
     Double getAmountOfGrapes(int year);
     String getBestSellingType(int year);
-    Integer getDaysLeft();
+    Optional<Integer> getDaysLeft();
 }
