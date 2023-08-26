@@ -20,8 +20,8 @@ public interface Features {
     void addWineType(String name, String origin, Double price);
     List<WineBottle> getStocks();
     List<Worker> getWorkers(java.util.Date start, java.util.Date end);
-    Double getWinePrice(String type);
-    Supplier getBestSupplier(String product);
+    Optional<Double> getWinePrice(String type);
+    Optional<Supplier> getBestSupplier(String product);
     Double getAmountOfSoldWine(int year);
     Double getAmountOfGrapes(int year);
     String getBestSellingType(int year);

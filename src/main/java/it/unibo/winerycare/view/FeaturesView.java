@@ -33,6 +33,7 @@ public class FeaturesView extends JFrame{
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("WineryCare");
+        setLocationRelativeTo(null); 
 
         final JPanel panel = new JPanel(new GridLayout(ROWS, COLS, 0, GAP));
         this.getContentPane().add(panel);
@@ -67,8 +68,7 @@ public class FeaturesView extends JFrame{
 
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final JFrame frame = new JFrame();
-                frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                final JFrame frame = new JFrame(); 
                 JPanel p;
                 final JButton bt;
                 List<JTextField> fields = new ArrayList<>();
@@ -82,6 +82,7 @@ public class FeaturesView extends JFrame{
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.addClient(fields.get(0).getText(), fields.get(1).getText());
+                                    JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 } 
                             };
                             bt.addActionListener(act);
@@ -94,6 +95,7 @@ public class FeaturesView extends JFrame{
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.addSupplier(fields.get(0).getText(), fields.get(1).getText());
+                                    JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -109,6 +111,7 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.sellProduct(fields.get(0).getText(), fields.get(1).getText(),
                                         fields.get(2).getText(), Integer.valueOf(fields.get(3).getText()));
+                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -123,11 +126,25 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     System.out.println(fields.size());
                                     features.addMaintenanceCompany(fields.get(0).getText(), fields.get(1).getText());
+                                    JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
                             break;
-                    case 5: bt = setFrame(frame,"nome tipologia", "origine", "prezzo");
+                    case 5: bt = setFrame(frame, "nome tipo", "nuovo prezzo");
+                            p = (JPanel)frame.getContentPane().getComponent(0);
+                            fields.add((JTextField)p.getComponent(1));
+                            fields.add((JTextField)p.getComponent(3));
+                            act = new ActionListener(){
+                                @Override
+                                public void actionPerformed(ActionEvent arg0) {
+                                    features.updateSalePrice(fields.get(0).getText(), Double.valueOf(fields.get(1).getText()));
+                                    JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                }
+                            };
+                            bt.addActionListener(act);
+                            break;
+                    case 6: bt = setFrame(frame,"nome tipologia", "origine", "prezzo");
                             p = (JPanel)frame.getContentPane().getComponent(0);
                             fields.add((JTextField)p.getComponent(1));
                             fields.add((JTextField)p.getComponent(3));
@@ -137,18 +154,7 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.addWineType(fields.get(0).getText(), fields.get(1).getText(), 
                                         Double.valueOf(fields.get(2).getText()));
-                                }
-                            };
-                            bt.addActionListener(act);
-                            break;
-                    case 6: bt = setFrame(frame, "nome ditta manutentrice", "partita IVA ditta");
-                            p = (JPanel)frame.getContentPane().getComponent(0);
-                            fields.add((JTextField)p.getComponent(1));
-                            fields.add((JTextField)p.getComponent(3));
-                            act = new ActionListener(){
-                                @Override
-                                public void actionPerformed(ActionEvent arg0) {
-                                    features.addMaintenanceCompany(fields.get(0).getText(), fields.get(1).getText());
+                                        JOptionPane.showMessageDialog(p, "Aggiornamento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -164,6 +170,7 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.buyMachinery(fields.get(0).getText(), fields.get(1).getText(), 
                                         Integer.valueOf(fields.get(2).getText()) , fields.get(3).getText());
+                                        JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -179,6 +186,7 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.buyWineProduct(fields.get(0).getText(), fields.get(1).getText(), 
                                         Double.valueOf(fields.get(2).getText()) , fields.get(3).getText());
+                                        JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -194,6 +202,7 @@ public class FeaturesView extends JFrame{
                                 public void actionPerformed(ActionEvent arg0) {
                                     features.buyPackagingProduct(fields.get(0).getText(), fields.get(1).getText(), 
                                         fields.get(2).getText() , fields.get(3).getText());
+                                        JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
                                 }
                             };
                             bt.addActionListener(act);
@@ -230,8 +239,13 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    JOptionPane.showMessageDialog(p, features.getWinePrice(fields.get(0).getText()), 
+                                    if(features.getWinePrice(fields.get(0).getText()).isEmpty()){
+                                        JOptionPane.showMessageDialog(p, "Tipologia non presente", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, features.getWinePrice(fields.get(0).getText()).get(), 
                                                                 "Prezzo tipologia " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                    } 
                                 } 
                             };
                             bt.addActionListener(act);
@@ -242,9 +256,14 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    Supplier supplier = features.getBestSupplier(fields.get(0).getText());
-                                    String s = supplier.getName() + ", partita iva: " + supplier.getPIVA();
-                                    JOptionPane.showMessageDialog(p, s, "Miglior fornitore ", JOptionPane.PLAIN_MESSAGE);
+                                    if(features.getBestSupplier(fields.get(0).getText()).isEmpty()){
+                                        JOptionPane.showMessageDialog(p, "Prodotto non disponibile", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                    else{
+                                        Supplier supplier = features.getBestSupplier(fields.get(0).getText()).get();
+                                        String s = supplier.getName() + ", partita iva: " + supplier.getPIVA();
+                                        JOptionPane.showMessageDialog(p, s, "Miglior fornitore ", JOptionPane.PLAIN_MESSAGE);
+                                    }
                                 } 
                             };
                             bt.addActionListener(act);
@@ -315,6 +334,7 @@ public class FeaturesView extends JFrame{
         }
         buttonPanel.add(okButton);
 
+        frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
 

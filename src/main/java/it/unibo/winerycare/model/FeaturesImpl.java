@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
+
 import it.unibo.winerycare.db.Supplier;
 import it.unibo.winerycare.db.WineBottle;
 import it.unibo.winerycare.db.Worker;
@@ -31,6 +33,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, type);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -44,6 +47,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -58,6 +62,7 @@ public class FeaturesImpl implements Features {
             final ResultSet result = statement.executeQuery();
             return result.getDouble("l.Prezzo");
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -76,6 +81,7 @@ public class FeaturesImpl implements Features {
             statement.setString(5, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -98,6 +104,7 @@ public class FeaturesImpl implements Features {
             statement.setDate(8, null);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -120,6 +127,7 @@ public class FeaturesImpl implements Features {
             statement.setDate(8, null);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -146,6 +154,7 @@ public class FeaturesImpl implements Features {
             statement.setInt(5, bottleNum);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -159,6 +168,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -173,6 +183,7 @@ public class FeaturesImpl implements Features {
             statement.setDouble(1, newPrice);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -187,6 +198,7 @@ public class FeaturesImpl implements Features {
             statement.setDouble(3, price);
             statement.executeUpdate();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -213,6 +225,7 @@ public class FeaturesImpl implements Features {
             }
             return stocks;
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -237,27 +250,32 @@ public class FeaturesImpl implements Features {
             }
             return workers;
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public Double getWinePrice(String type) {
+    public Optional<Double> getWinePrice(String type) {
         final String query = "SELECT Prezzo_di_vendita\n" + //
                             "FROM tipologie\n" + //
                             "WHERE Nome = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(1, type);
             final ResultSet result = statement.executeQuery();
-            result.next();
-            return result.getDouble("Prezzo_di_vendita");
+            boolean flag = result.next();
+            if(flag){
+                return Optional.of(result.getDouble("Prezzo_di_vendita"));
+            }
+            return Optional.empty();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public Supplier getBestSupplier(String product) {
+    public Optional<Supplier> getBestSupplier(String product) {
         final String query = "SELECT *\n" + //
                             "FROM fornitori f\n" + //
                             "WHERE f.Partita_IVA = (SELECT l.Partita_IVA_fornitore\n" + //
@@ -268,9 +286,13 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(1, product);
             final ResultSet result = statement.executeQuery();
-            result.next();
-            return new Supplier(result.getString("Nome"), result.getString("Partita_IVA"));
+            boolean flag = result.next();
+            if(flag){
+                return Optional.of(new Supplier(result.getString("Nome"), result.getString("Partita_IVA")));
+            }
+            return Optional.empty();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -286,6 +308,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getDouble("SUM(Capacita)");
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -301,6 +324,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getDouble("SUM(Peso)");
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -320,6 +344,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getString("tipologia");
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }
@@ -338,6 +363,7 @@ public class FeaturesImpl implements Features {
             }
             return Optional.empty();
         } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);
         }
     }

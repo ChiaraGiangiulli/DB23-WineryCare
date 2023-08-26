@@ -40,7 +40,8 @@ public class StartView extends JFrame{
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("WineryCare");
         this.setSize(DIM, DIM);
-
+        setLocationRelativeTo(null); 
+        
         /*ImageIcon backgroundImage = new ImageIcon("src\\resources\\background.jpg");
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
