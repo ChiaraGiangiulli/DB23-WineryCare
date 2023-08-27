@@ -111,16 +111,16 @@ public class FeaturesImpl implements Features {
 
 
     @Override
-    public void buyPackagingProduct(final String name, final String code ,final String type, final String pIva) {
+    public void buyPackagingProduct(final String name, final String code ,final int quantity, final String pIva) {
         final Double price = this.getProductPrice(pIva, name);
-        final String query = "INSERT INTO prodotti_per_imballaggio(Nome, Data_acquisto, Prezzo, Codice, Tipologia, Partita_IVA_fornitore, \n" + //
+        final String query = "INSERT INTO prodotti_per_imballaggio(Nome, Data_acquisto, Prezzo, Codice, Quantita, Partita_IVA_fornitore, \n" + //
                                                                     "Nome_fase, Inizio_fase, Fine_fase)\n" + //
                             "VALUES(?, CURRENT_DATE(), p, ?, ?, ?, NULL, NULL, NULL)";
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(1, name);
             statement.setDouble(2, price);
             statement.setString(3, code);
-            statement.setString(4, type);
+            statement.setInt(4, quantity);
             statement.setString(5, pIva);
             statement.setString(6, null);
             statement.setDate(7, null);
@@ -174,14 +174,15 @@ public class FeaturesImpl implements Features {
     }
 
     @Override
-    public void updateSalePrice(String name, Double newPrice) {
+    public int updateSalePrice(String name, Double newPrice) {
         final String query = "UPDATE tipologie AS t\n" + //
                             "SET t.Prezzo_di_vendita = ?\n" + //
                             "WHERE t.Nome = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(2, name);
             statement.setDouble(1, newPrice);
-            statement.executeUpdate();
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated;
         } catch (final SQLException e) {
             JOptionPane.showMessageDialog(null, e);
             throw new IllegalStateException(e);

@@ -1,20 +1,23 @@
 package it.unibo.winerycare.view;
 
 import javax.swing.BorderFactory;
-//import javax.swing.ImageIcon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import it.unibo.winerycare.db.ConnectionProvider;
 import it.unibo.winerycare.model.Features;
 import it.unibo.winerycare.model.FeaturesImpl;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -25,7 +28,7 @@ public class StartView extends JFrame{
     private static final int DIM = 700;
     private static final int ROWS = 3;
     private static final int COLS = 2;
-    private static final int TOPBORDER = 250;
+    private static final int TOPBORDER = 300;
     private static final int BOTTOMBORDER = 200;
     private static final int GAP = 20;
     protected static final String DB_NAME = "winerycare";
@@ -41,33 +44,29 @@ public class StartView extends JFrame{
         this.setTitle("WineryCare");
         this.setSize(DIM, DIM);
         setLocationRelativeTo(null); 
-        
-        /*ImageIcon backgroundImage = new ImageIcon("src\\resources\\background.jpg");
-        JLabel backgroundLabel = new JLabel(backgroundImage);
-        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
-        this.getContentPane().add(backgroundLabel);*/
 
-        final JPanel panel = new JPanel(new GridLayout(ROWS, COLS, 0, GAP));
-        panel.setBorder(BorderFactory.createEmptyBorder(TOPBORDER, GAP, BOTTOMBORDER, GAP));
+        final Image image = new ImageIcon("src\\resources\\background.png").getImage();
+        final JPanel panel = new JPanel(new GridLayout(ROWS, COLS, 0, GAP)){
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+            }
+        };
+        panel.setBorder(BorderFactory.createEmptyBorder(TOPBORDER, GAP, BOTTOMBORDER, GAP*4));
         this.getContentPane().add(panel, BorderLayout.CENTER);
-
         final JPanel loginPanel = new JPanel();
         this.getContentPane().add(loginPanel, BorderLayout.SOUTH);
 
-        final JPanel welcomePanel = new JPanel();
-        welcomePanel.setBorder(BorderFactory.createEmptyBorder(GAP, 0, 0, 0));
-        this.getContentPane().add(welcomePanel, BorderLayout.NORTH);
-
         username = new JTextField(20);
         password = new JPasswordField(20);
+
         loginButton = new JButton("Login");
 
-        panel.add(new JLabel("Inserisci il tuo username: "));
+        panel.add(new JLabel("Inserisci il tuo username:   ", SwingConstants.RIGHT));
         panel.add(username);
-        panel.add(new JLabel("Inserisci la tua password: "));
+        panel.add(new JLabel("Inserisci la tua password:   ", SwingConstants.RIGHT));
         panel.add(password);
         loginPanel.add(loginButton, BorderLayout.CENTER);
-        welcomePanel.add(new JLabel("Benvenuto su WineryCare!"));
 
         final ActionListener al = new ActionListener() {
 
@@ -78,7 +77,6 @@ public class StartView extends JFrame{
                     final Connection connection = prov.getMySQLConnection();
                     features = new FeaturesImpl(connection);
                     new FeaturesView(features);
-                    dispose();
                 } catch (IllegalStateException exception) {
                     throw new IllegalStateException("Error", exception);
                 }
@@ -86,7 +84,6 @@ public class StartView extends JFrame{
 
         };
         loginButton.addActionListener(al);
-        
         this.setVisible(true);
         
     }

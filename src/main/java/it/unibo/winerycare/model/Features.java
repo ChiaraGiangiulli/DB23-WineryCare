@@ -13,10 +13,10 @@ public interface Features {
     void addSupplier(String name, String pIva);
     void buyMachinery(String name, String code , int productionYear, String pIva);
     void buyWineProduct(String name, String code , Double weight, String pIva);
-    void buyPackagingProduct(String name, String code, String type, String pIva);
+    void buyPackagingProduct(String name, String code, int quantity, String pIva);
     void sellProduct(String clientCode, String clientType, String lot, int bottleNum);
     void addMaintenanceCompany(String name, String pIva);
-    void updateSalePrice(String name, Double nerPrice);
+    int updateSalePrice(String name, Double newPrice);
     void addWineType(String name, String origin, Double price);
     List<WineBottle> getStocks();
     List<Worker> getWorkers(java.util.Date start, java.util.Date end);
