@@ -116,9 +116,13 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    features.sellProduct(fields.get(0).getText(), fields.get(1).getText(),
-                                        fields.get(2).getText(), Integer.valueOf(fields.get(3).getText()));
-                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(features.sellProduct(fields.get(0).getText(), fields.get(1).getText(),
+                                        fields.get(2).getText(), Integer.valueOf(fields.get(3).getText())) != 0){
+                                            JOptionPane.showMessageDialog(p, "Vendita avvenuta con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "Bottiglia inesistente", "", JOptionPane.PLAIN_MESSAGE);
+                                    }  
                                 }
                             };
                             bt.addActionListener(act);

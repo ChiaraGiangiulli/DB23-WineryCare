@@ -14,7 +14,7 @@ public interface Features {
     void buyMachinery(String name, String code , int productionYear, String pIva);
     void buyWineProduct(String name, String code , Double weight, String pIva);
     void buyPackagingProduct(String name, String code, int quantity, String pIva);
-    void sellProduct(String clientCode, String clientType, String lot, int bottleNum);
+    int sellProduct(String clientCode, String clientType, String lot, int bottleNum);
     void addMaintenanceCompany(String name, String pIva);
     int updateSalePrice(String name, Double newPrice);
     void addWineType(String name, String origin, Double price);

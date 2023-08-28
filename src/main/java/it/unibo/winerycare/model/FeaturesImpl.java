@@ -33,7 +33,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, type);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -47,7 +47,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -62,7 +62,7 @@ public class FeaturesImpl implements Features {
             final ResultSet result = statement.executeQuery();
             return result.getDouble("l.Prezzo");
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -81,7 +81,7 @@ public class FeaturesImpl implements Features {
             statement.setString(5, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -104,7 +104,7 @@ public class FeaturesImpl implements Features {
             statement.setDate(8, null);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -127,7 +127,7 @@ public class FeaturesImpl implements Features {
             statement.setDate(8, null);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -135,26 +135,49 @@ public class FeaturesImpl implements Features {
     
 
     @Override
-    public void sellProduct(final String clientCode, final String clientType, final String lot, final int bottleNum) {
-        final String query = "SELECT t.Prezzo_di_vendita AS prezzo\n" + //
-                            "FROM tipologie t\n" + //
-                            "WHERE t.Nome = bottiglie_di_vino.Nome_tipologia;\n" + //
-                            "\n" + //
-                            "INSERT IGNORE INTO clienti (Codice, Tipologia)\n" + //
-                            "VALUES (?,?);\n" + //
-                            "\n" + //
-                            "UPDATE bottiglie_di_vino AS bott\n" + //
-                            "SET Giacenza = FALSE, Codice_cliente = ?, Data_acquisto = CURRENT_DATE(), Importo_acquisto = prezzo * bott.Capacita\n" + //
-                            "WHERE bott.Numero_di_lotto = ? AND bott.Numero_bottiglia = ?";
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+    public int sellProduct(final String clientCode, final String clientType, final String lot, final int bottleNum) {
+        Optional<Double> price = Optional.empty();
+        final String firstQuery = "INSERT IGNORE INTO clienti(Codice, Tipologia) VALUES (?,?);\n";
+        try (PreparedStatement statement = this.connection.prepareStatement(firstQuery)) {
             statement.setString(1, clientCode);
             statement.setString(2, clientType);
-            statement.setString(3, clientCode);
-            statement.setString(4, lot);
-            statement.setInt(5, bottleNum);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalStateException(e);
+        }
+        final String secondQuery = "SELECT t.Prezzo_di_vendita as prezzo\n" + //
+                                    "FROM tipologie t, bottiglie_di_vino b\n" + //
+                                    "WHERE  b.Numero_di_lotto = ? AND b.Numero_bottiglia = ? AND t.Nome = b.Nome_tipologia\n";
+        try (PreparedStatement statement = this.connection.prepareStatement(secondQuery)) {
+            statement.setString(1, lot);
+            statement.setInt(2, bottleNum);
+            final ResultSet result = statement.executeQuery();
+            if(result.next()){
+                price = Optional.of(result.getDouble("prezzo"));
+            }
+            else{
+                price = Optional.empty();
+                return 0;
+            }
+            
+        } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalStateException(e);
+        }
+
+        final String thirdQuery = "UPDATE bottiglie_di_vino AS bott\n" + //
+                                    "SET Giacenza = FALSE, Codice_cliente = ?, Data_acquisto = CURRENT_DATE(), Importo_acquisto = ?* bott.Capacita\n" + //
+                                    "WHERE bott.Numero_di_lotto = ? AND bott.Numero_bottiglia = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(thirdQuery)) {
+            statement.setString(1, clientCode);
+            statement.setDouble(2, price.get());
+            statement.setString(3, lot);
+            statement.setInt(4, bottleNum);
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated;
+        } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -168,7 +191,7 @@ public class FeaturesImpl implements Features {
             statement.setString(2, pIva);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -184,7 +207,7 @@ public class FeaturesImpl implements Features {
             int rowsUpdated = statement.executeUpdate();
             return rowsUpdated;
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -199,7 +222,7 @@ public class FeaturesImpl implements Features {
             statement.setDouble(3, price);
             statement.executeUpdate();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -226,7 +249,7 @@ public class FeaturesImpl implements Features {
             }
             return stocks;
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -251,7 +274,7 @@ public class FeaturesImpl implements Features {
             }
             return workers;
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -270,7 +293,7 @@ public class FeaturesImpl implements Features {
             }
             return Optional.empty();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -293,7 +316,7 @@ public class FeaturesImpl implements Features {
             }
             return Optional.empty();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -309,7 +332,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getDouble("SUM(Capacita)");
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -325,7 +348,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getDouble("SUM(Peso)");
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -345,7 +368,7 @@ public class FeaturesImpl implements Features {
             result.next();
             return result.getString("tipologia");
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
@@ -364,7 +387,7 @@ public class FeaturesImpl implements Features {
             }
             return Optional.empty();
         } catch (final SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
