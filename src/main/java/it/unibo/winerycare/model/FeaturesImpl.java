@@ -67,6 +67,22 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    public List<Supplier> getSuppliers(){
+        final String query = "SELECT *\n" + //
+                            "FROM fornitori";
+        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+            final ResultSet result = statement.executeQuery();
+            List<Supplier> suppliers = new ArrayList<>();
+            while(result.next()){
+                suppliers.add(new Supplier(result.getString("Nome"),result.getString("Partita_IVA")));
+            }
+            return suppliers;
+        } catch (final SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalStateException(e);
+        }
+    }
+
     @Override
     public void buyMachinery(final String name, final String code ,final int productionYear, final String pIva) {
         final Double price = this.getProductPrice(pIva, name);
@@ -355,13 +371,13 @@ public class FeaturesImpl implements Features {
 
     @Override
     public String getBestSellingType(int year) {
-        final String query = "SELECT tipologia\n" + //
-                "FROM (SELECT b.Nome_tipologia AS tipologia, COUNT(*) AS numero\n" + //
-                    "FROM bottiglie_di_vino b\n" + //
-                    "WHERE b.Anno = ? AND Giacenza = FALSE\n" + //
-                    "GROUP BY b.Nome_tipologia\n" + //
-                    "ORDER BY numero DESC\n" + //
-                    "LIMIT 1) AS tipo";
+        final String query = "WITH bottiglie_vendute as ( SELECT b.Nome_tipologia AS tipologia, COUNT(*) AS numero\n" + //
+                            "FROM bottiglie_di_vino b\n" + //
+                            "WHERE b.Anno = '2021' AND Giacenza = FALSE\n" + //
+                            "GROUP BY b.Nome_tipologia)\n " + //
+                            "SELECT tipologia\n" + //
+                            "FROM bottiglie_vendute\n" + //
+                            "WHERE numero = (SELECT MAX(numero) FROM bottiglie_vendute)";
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setInt(1, year);
             final ResultSet result = statement.executeQuery();

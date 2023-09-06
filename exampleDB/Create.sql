@@ -8,7 +8,7 @@ drop database if exists winerycare;
 create database if not exists winerycare;
 
 use winerycare;
-SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
 create table BOTTIGLIE_DI_VINO (
 	Nome char(20) not null,
 	Anno numeric(4) not null,

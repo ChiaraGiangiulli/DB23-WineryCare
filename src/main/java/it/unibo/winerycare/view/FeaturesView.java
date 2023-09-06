@@ -58,10 +58,10 @@ public class FeaturesView extends JFrame{
         featuresBox.addItem("10) Visualizza giacenze in magazzino");
         featuresBox.addItem("11) Visualizza la lista di operai che hanno un contratto in un dato periodo");
         featuresBox.addItem("12) Visualizza il prezzo di una data tipologia di vino");
-        featuresBox.addItem("13) Ottieni il fornitore più vantaggioso per prodotto");
-        featuresBox.addItem("14) Ottieni la quantità di vino venduto per anno");
-        featuresBox.addItem("15) Ottieni la quantità di uva raccolta per anno");
-        featuresBox.addItem("16) Ottieni la tipologia di vino più venduta per anno");
+        featuresBox.addItem("13) Ottieni il fornitore più vantaggioso per un prodotto");
+        featuresBox.addItem("14) Ottieni la quantità di vino venduto in un anno");
+        featuresBox.addItem("15) Ottieni la quantità di uva raccolta in un anno");
+        featuresBox.addItem("16) Ottieni la tipologia di vino più venduta in un anno");
         featuresBox.addItem("17) Controlla il tempo di fermentazione in una vasca");
         
 
@@ -74,6 +74,7 @@ public class FeaturesView extends JFrame{
                 final JButton bt;
                 List<JTextField> fields = new ArrayList<>();
                 final ActionListener act;
+                String suppliers;
                 switch(featuresBox.getSelectedIndex()+1){
                     case 1: bt = setFrame(frame, "codice cliente", "tipo cliente");
                             p = (JPanel)frame.getContentPane().getComponent(0);
@@ -82,8 +83,14 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    features.addClient(fields.get(0).getText(), fields.get(1).getText());
-                                    JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        features.addClient(fields.get(0).getText(), fields.get(1).getText());
+                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);  
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                    
                                 } 
                             };
                             bt.addActionListener(act);
@@ -95,14 +102,18 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(fields.get(1).getText().length() == 11){
-                                        features.addSupplier(fields.get(0).getText(), fields.get(1).getText());
-                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        if(fields.get(1).getText().length() == 11){
+                                            features.addSupplier(fields.get(0).getText(), fields.get(1).getText());
+                                            JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        else{
+                                            JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                        
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
-                                    
                                 }
                             };
                             bt.addActionListener(act);
@@ -116,13 +127,24 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(features.sellProduct(fields.get(0).getText(), fields.get(1).getText(),
-                                        fields.get(2).getText(), Integer.valueOf(fields.get(3).getText())) != 0){
-                                            JOptionPane.showMessageDialog(p, "Vendita avvenuta con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            if(features.sellProduct(fields.get(0).getText(), fields.get(1).getText(),
+                                                fields.get(2).getText(), Integer.valueOf(fields.get(3).getText())) != 0){
+                                                    JOptionPane.showMessageDialog(p, "Vendita avvenuta con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                                }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, "Bottiglia inesistente", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
                                         }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                    }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Bottiglia inesistente", "", JOptionPane.PLAIN_MESSAGE);
-                                    }  
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                   
                                 }
                             };
                             bt.addActionListener(act);
@@ -134,13 +156,19 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(fields.get(1).getText().length() == 11){
-                                        features.addMaintenanceCompany(fields.get(0).getText(), fields.get(1).getText());
-                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        if(fields.get(1).getText().length() == 11){
+                                            features.addMaintenanceCompany(fields.get(0).getText(), fields.get(1).getText());
+                                            JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        else{
+                                            JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                                                              
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
+
                                 }
                             };
                             bt.addActionListener(act);
@@ -152,13 +180,25 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    int n = features.updateSalePrice(fields.get(0).getText(), Double.valueOf(fields.get(1).getText()));
-                                    if(n != 0){
-                                        JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        int n = 0;
+                                        try{
+                                            n = features.updateSalePrice(fields.get(0).getText(), Double.valueOf(fields.get(1).getText()));
+                                            if(n != 0){
+                                                JOptionPane.showMessageDialog(p, "Inserimento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, "Tipologia non presente", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                    
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Tipologia non presente", "", JOptionPane.PLAIN_MESSAGE);
-                                    }
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }                                    
+                                    
                                     
                                 }
                             };
@@ -172,9 +212,20 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    features.addWineType(fields.get(0).getText(), fields.get(1).getText(), 
-                                        Double.valueOf(fields.get(2).getText()));
-                                    JOptionPane.showMessageDialog(p, "Aggiornamento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            features.addWineType(fields.get(0).getText(), fields.get(1).getText(), 
+                                                Double.valueOf(fields.get(2).getText()));
+                                            JOptionPane.showMessageDialog(p, "Aggiornamento avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                     
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                    
                                 }
                             };
                             bt.addActionListener(act);
@@ -185,17 +236,34 @@ public class FeaturesView extends JFrame{
                             fields.add((JTextField)p.getComponent(3));
                             fields.add((JTextField)p.getComponent(5));
                             fields.add((JTextField)p.getComponent(7));
+                            suppliers = "<html> ";
+                            for (Supplier supplier : features.getSuppliers()) {
+                                suppliers = suppliers + supplier.getName() + ", partita IVA: " + supplier.getPIVA() + ".<br>";
+                            }
+                            suppliers = suppliers + "</html>";
+                            showInfo(suppliers, new JFrame());
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(fields.get(1).getText().length() == 11){
-                                        features.buyMachinery(fields.get(0).getText(), fields.get(1).getText(), 
-                                        Integer.valueOf(fields.get(2).getText()) , fields.get(3).getText());
-                                    JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            if(fields.get(1).getText().length() == 11){
+                                                features.buyMachinery(fields.get(0).getText(), fields.get(1).getText(), 
+                                                Integer.valueOf(fields.get(2).getText()) , fields.get(3).getText());
+                                            JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                     
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
+                                        
                                 }
                             };
                             bt.addActionListener(act);
@@ -206,17 +274,34 @@ public class FeaturesView extends JFrame{
                             fields.add((JTextField)p.getComponent(3));
                             fields.add((JTextField)p.getComponent(5));
                             fields.add((JTextField)p.getComponent(7));
+                            suppliers = "<html> ";
+                            for (Supplier supplier : features.getSuppliers()) {
+                                suppliers = suppliers + supplier.getName() + ", partita IVA: " + supplier.getPIVA() + ".<br>";
+                            }
+                            suppliers = suppliers + "</html>";
+                            showInfo(suppliers, new JFrame());
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(fields.get(1).getText().length() == 11){
-                                        features.buyWineProduct(fields.get(0).getText(), fields.get(1).getText(), 
-                                        Double.valueOf(fields.get(2).getText()) , fields.get(3).getText());
-                                        JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            if(fields.get(1).getText().length() == 11){
+                                                features.buyWineProduct(fields.get(0).getText(), fields.get(1).getText(), 
+                                                Double.valueOf(fields.get(2).getText()) , fields.get(3).getText());
+                                                JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                    
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
+                                        
                                 }
                             };
                             bt.addActionListener(act);
@@ -227,28 +312,46 @@ public class FeaturesView extends JFrame{
                             fields.add((JTextField)p.getComponent(3));
                             fields.add((JTextField)p.getComponent(5));
                             fields.add((JTextField)p.getComponent(7));
+                            suppliers = "<html> ";
+                            for (Supplier supplier : features.getSuppliers()) {
+                                suppliers = suppliers + supplier.getName() + ", partita IVA: " + supplier.getPIVA() + ".<br>";
+                            }
+                            suppliers = suppliers + "</html>";
+                            showInfo(suppliers, new JFrame());
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(fields.get(1).getText().length() == 11){
-                                        features.buyPackagingProduct(fields.get(0).getText(), fields.get(1).getText(), 
-                                        Integer.valueOf(fields.get(2).getText()) , fields.get(3).getText());
-                                        JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            if(fields.get(1).getText().length() == 11){
+                                                features.buyPackagingProduct(fields.get(0).getText(), fields.get(1).getText(), 
+                                                    Integer.valueOf(fields.get(2).getText()) , fields.get(3).getText());
+                                                JOptionPane.showMessageDialog(p, "Acquisto avvenuto con successo", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                     
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, "Partita IVA non valida", "", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
+                                        
                                 }
                             };
                             bt.addActionListener(act);
                             break;
-                    case 10:String stocks = " ";
+                    case 10:String stocks = "<html> ";
                             for (WineBottle bottle : features.getStocks()) {
                                 stocks = stocks + bottle.getName() + ", anno di produzione: " + bottle.getYear() + ", capacità: " + bottle.getCapacity()
                                     + ", numero di lotto: " + bottle.getLotNumber() + ", numero bottiglia: " + bottle.getBottleNumber()
-                                    + ", gradazione alcolica: " + bottle.getAlcoholContent() + ", tipologia: " + bottle.getType() + ".\n";
+                                    + ", gradazione alcolica: " + bottle.getAlcoholContent() + ", tipologia: " + bottle.getType() + ".<br>";
                             } 
-                            JOptionPane.showMessageDialog(panel, stocks, "Giacenze", JOptionPane.PLAIN_MESSAGE);
+                            stocks = stocks + "</html>";
+                            showInfo(stocks, new JFrame());
                             break;
                     case 11:bt = setFrame(frame, "inizio periodo (AAAA-MM-GG)", "fine periodo (AAAA-MM-GG)");
                             p = (JPanel)frame.getContentPane().getComponent(0);
@@ -258,12 +361,28 @@ public class FeaturesView extends JFrame{
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
                                     String workers = "";
-                                    for (Worker worker : features.getWorkers(Date.valueOf(fields.get(0).getText()),
-                                                                             Date.valueOf(fields.get(1).getText()))) {
-                                        workers = workers + worker.getName() + " " + worker.getSurname() + ", data di nascita: " + worker.getDateOfBirth()
-                                                + ", indirizzo: " + worker.getAddress() + ", id: " + worker.getId() + ".\n";
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            for (Worker worker : features.getWorkers(Date.valueOf(fields.get(0).getText()),
+                                                                                    Date.valueOf(fields.get(1).getText()))) {
+                                                workers = workers + worker.getName() + " " + worker.getSurname() + ", data di nascita: " + worker.getDateOfBirth()
+                                                        + ", indirizzo: " + worker.getAddress() + ", id: " + worker.getId() + ".\n";
+                                            }
+                                            if(workers.equals("")){
+                                                JOptionPane.showMessageDialog(p, "Non ci sono operai con contratto nel periodo indicato", "", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                            else{
+                                                JOptionPane.showMessageDialog(p, workers, "Operai con contratto nel periodo indicato", JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        }
+                                        catch(IllegalArgumentException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                    
                                     }
-                                    JOptionPane.showMessageDialog(p, workers, "Operai con contratto nel periodo indicato", JOptionPane.PLAIN_MESSAGE);
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                        
                                 }
                             };
                             bt.addActionListener(act);
@@ -274,13 +393,19 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(features.getWinePrice(fields.get(0).getText()).isEmpty()){
-                                        JOptionPane.showMessageDialog(p, "Tipologia non presente", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        if(features.getWinePrice(fields.get(0).getText()).isEmpty()){
+                                            JOptionPane.showMessageDialog(p, "Tipologia non presente", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        else{
+                                            JOptionPane.showMessageDialog(p, features.getWinePrice(fields.get(0).getText()).get(), 
+                                                                    "Prezzo tipologia " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                        }
                                     }
                                     else{
-                                        JOptionPane.showMessageDialog(p, features.getWinePrice(fields.get(0).getText()).get(), 
-                                                                "Prezzo tipologia " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
-                                    } 
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                         
                                 } 
                             };
                             bt.addActionListener(act);
@@ -291,14 +416,20 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    if(features.getBestSupplier(fields.get(0).getText()).isEmpty()){
-                                        JOptionPane.showMessageDialog(p, "Prodotto non disponibile", "", JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        if(features.getBestSupplier(fields.get(0).getText()).isEmpty()){
+                                            JOptionPane.showMessageDialog(p, "Prodotto non disponibile", "", JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        else{
+                                            Supplier supplier = features.getBestSupplier(fields.get(0).getText()).get();
+                                            String s = supplier.getName() + ", partita iva: " + supplier.getPIVA();
+                                            JOptionPane.showMessageDialog(p, s, "Miglior fornitore ", JOptionPane.PLAIN_MESSAGE);
+                                        }                                      
                                     }
                                     else{
-                                        Supplier supplier = features.getBestSupplier(fields.get(0).getText()).get();
-                                        String s = supplier.getName() + ", partita iva: " + supplier.getPIVA();
-                                        JOptionPane.showMessageDialog(p, s, "Miglior fornitore ", JOptionPane.PLAIN_MESSAGE);
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
                                     }
+                                        
                                 } 
                             };
                             bt.addActionListener(act);
@@ -309,8 +440,19 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    JOptionPane.showMessageDialog(p, features.getAmountOfSoldWine(Integer.valueOf(fields.get(0).getText())), 
-                                                            "Vino venduto nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            JOptionPane.showMessageDialog(p, features.getAmountOfSoldWine(Integer.valueOf(fields.get(0).getText())), 
+                                                                "Vino venduto nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                      
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                        
                                 } 
                             };
                             bt.addActionListener(act);
@@ -321,8 +463,19 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    JOptionPane.showMessageDialog(p, features.getAmountOfGrapes(Integer.valueOf(fields.get(0).getText())), 
-                                                            "Uva raccolta nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            JOptionPane.showMessageDialog(p, features.getAmountOfGrapes(Integer.valueOf(fields.get(0).getText())), 
+                                                                "Uva raccolta nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                      
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                        
                                 } 
                             };
                             bt.addActionListener(act);
@@ -333,8 +486,19 @@ public class FeaturesView extends JFrame{
                             act = new ActionListener(){
                                 @Override
                                 public void actionPerformed(ActionEvent arg0) {
-                                    JOptionPane.showMessageDialog(p, features.getBestSellingType(Integer.valueOf(fields.get(0).getText())), 
-                                                            "Tipologia più venduta nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                    if(noneEmpty(fields)){
+                                        try{
+                                            JOptionPane.showMessageDialog(p, features.getBestSellingType(Integer.valueOf(fields.get(0).getText())), 
+                                                                "Tipologia più venduta nell'anno " + fields.get(0).getText(), JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                        catch(NumberFormatException exc){
+                                            JOptionPane.showMessageDialog(p, "Valore non valido", "", JOptionPane.PLAIN_MESSAGE);
+                                        }                                      
+                                    }
+                                    else{
+                                        JOptionPane.showMessageDialog(p, "I campi non possono essere vuoti", "", JOptionPane.PLAIN_MESSAGE);
+                                    }
+                                        
                                 } 
                             };
                             bt.addActionListener(act);
@@ -376,6 +540,26 @@ public class FeaturesView extends JFrame{
         frame.setVisible(true);
 
         return okButton;
+    }
+
+    private void showInfo(final String info, final JFrame frame){
+        final JPanel newPanel= new JPanel();
+        
+        frame.getContentPane().add(newPanel);
+        
+        newPanel.add(new JLabel(info));
+        
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+    }
+
+    private boolean noneEmpty(final List<JTextField> fields){
+        for (JTextField jTextField : fields) {
+            if(jTextField.getText().length() == 0) return false;
+        }
+        return true;
     }
 
 }

@@ -11,6 +11,7 @@ public interface Features {
     
     void addClient(String code, String type);
     void addSupplier(String name, String pIva);
+    List<Supplier> getSuppliers();
     void buyMachinery(String name, String code , int productionYear, String pIva);
     void buyWineProduct(String name, String code , Double weight, String pIva);
     void buyPackagingProduct(String name, String code, int quantity, String pIva);
