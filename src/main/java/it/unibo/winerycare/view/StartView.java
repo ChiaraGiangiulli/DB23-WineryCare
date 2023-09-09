@@ -22,7 +22,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 
-
+/**
+ * Class that represents the initial login screen of the WineryCare application.
+ */
 public class StartView extends JFrame{
 
     private static final int DIM = 700;
@@ -37,7 +39,9 @@ public class StartView extends JFrame{
     private JButton loginButton;
     protected Features features;
 
-    
+    /**
+     * Constructs a StartView instance, initializing the login screen.
+     */
     public StartView(){
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);

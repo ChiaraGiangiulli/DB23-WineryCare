@@ -15,15 +15,25 @@ import it.unibo.winerycare.db.WineBottle;
 import it.unibo.winerycare.db.Worker;
 import it.unibo.winerycare.utils.Utils;
 
+/**
+ * Implementation of the Features interface.
+ */
 public class FeaturesImpl implements Features {
 
     private final Connection connection;
 
+    /**
+     * Constructs a FeaturesImpl instance with a database connection.
+     *
+     * @param connection The database connection.
+     */
     public FeaturesImpl(final Connection connection) {
         this.connection = connection;
     }
     
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addClient(final String code, final String type) {
         final String query = "INSERT INTO clienti (Codice, Tipologia)\n" + //
@@ -38,6 +48,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addSupplier(final String name, final String pIva) {
         final String query = "INSERT INTO fornitori (Nome, Partita_IVA)\n" + //
@@ -52,6 +65,14 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * Retrieves the price of a product with a specific name from a supplier with a given P.IVA.
+     *
+     * @param pIva The Partita IVA of the supplier.
+     * @param name The name of the product.
+     * @return The price of the product.
+     * @throws IllegalStateException If a database error occurs.
+     */
     private Double getProductPrice(String pIva, String name) {
         final String query = "SELECT l.Prezzo AS p\n" + //
                             "FROM prodotti_di_listino l\n" + //
@@ -67,6 +88,12 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * Retrieves a list of all suppliers in the WineryCare system.
+     *
+     * @return A list of Supplier objects representing the suppliers.
+     * @throws IllegalStateException If a database error occurs.
+     */
     public List<Supplier> getSuppliers(){
         final String query = "SELECT *\n" + //
                             "FROM fornitori";
@@ -83,6 +110,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void buyMachinery(final String name, final String code ,final int productionYear, final String pIva) {
         final Double price = this.getProductPrice(pIva, name);
@@ -102,7 +132,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void buyWineProduct(final String name, final String code, final Double weight, final String pIva) {
         final Double price = this.getProductPrice(pIva, name);
@@ -125,7 +157,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void buyPackagingProduct(final String name, final String code ,final int quantity, final String pIva) {
         final Double price = this.getProductPrice(pIva, name);
@@ -148,8 +182,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
-    
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int sellProduct(final String clientCode, final String clientType, final String lot, final int bottleNum) {
         Optional<Double> price = Optional.empty();
@@ -190,14 +225,17 @@ public class FeaturesImpl implements Features {
             statement.setDouble(2, price.get());
             statement.setString(3, lot);
             statement.setInt(4, bottleNum);
-            int rowsUpdated = statement.executeUpdate();
-            return rowsUpdated;
+            int updatedRows = statement.executeUpdate();
+            return updatedRows;
         } catch (final SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addMaintenanceCompany(final String name, final String pIva) {
         final String query = "INSERT INTO ditte (Nome, Partita_IVA)\n" + //
@@ -212,6 +250,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int updateSalePrice(String name, Double newPrice) {
         final String query = "UPDATE tipologie AS t\n" + //
@@ -220,14 +261,17 @@ public class FeaturesImpl implements Features {
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setString(2, name);
             statement.setDouble(1, newPrice);
-            int rowsUpdated = statement.executeUpdate();
-            return rowsUpdated;
+            int updatedRows = statement.executeUpdate();
+            return updatedRows;
         } catch (final SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalStateException(e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addWineType(String name, String origin, Double price) {
         final String query = "INSERT INTO tipologie (Nome, Zona_origine, Prezzo_di_vendita)\n" + //
@@ -243,6 +287,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<WineBottle> getStocks() {
         final String query = "SELECT *\n" + //
@@ -270,6 +317,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Worker> getWorkers(java.util.Date start, java.util.Date end) {
         final String query = "SELECT o.*\n" + //
@@ -295,6 +345,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Double> getWinePrice(String type) {
         final String query = "SELECT Prezzo_di_vendita\n" + //
@@ -314,6 +367,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Supplier> getBestSupplier(String product) {
         final String query = "SELECT *\n" + //
@@ -337,6 +393,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Double getAmountOfSoldWine(int year) {
         final String query = "SELECT SUM(Capacita)\n" + //
@@ -353,6 +412,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Double getAmountOfGrapes(int year) {
         final String query = "SELECT SUM(Peso)\n" + //
@@ -369,6 +431,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getBestSellingType(int year) {
         final String query = "WITH bottiglie_vendute as ( SELECT b.Nome_tipologia AS tipologia, COUNT(*) AS numero\n" + //
@@ -389,6 +454,9 @@ public class FeaturesImpl implements Features {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Integer> getDaysLeft() {
         final String query = "SELECT DATEDIFF(f.Fine,CURRENT_DATE())\n" + //

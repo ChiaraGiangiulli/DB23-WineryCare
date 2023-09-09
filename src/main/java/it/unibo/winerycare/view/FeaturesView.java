@@ -23,6 +23,10 @@ import it.unibo.winerycare.db.WineBottle;
 import it.unibo.winerycare.db.Worker;
 import it.unibo.winerycare.model.Features;
 
+/**
+ * Class that represents a GUI view for displaying features.
+ * It extends JFrame and provides a JComboBox and a JButton for user interaction.
+ */
 public class FeaturesView extends JFrame{
 
     private static final int ROWS = 3;
@@ -31,6 +35,11 @@ public class FeaturesView extends JFrame{
     private JComboBox<String> featuresBox;
     private JButton nextButton;
 
+    /**
+     * Constructs a FeaturesView with the provided Features.
+     *
+     * @param features The Features to display.
+     */
     public FeaturesView(Features features) {
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -521,7 +530,13 @@ public class FeaturesView extends JFrame{
         this.setVisible(true);
     }
 
-
+    /**
+     * Sets up a JFrame with a panel to insert components and a "Ok" button.
+     *
+     * @param frame The JFrame to set up.
+     * @param arg   An array of strings specifying labels for components to insert.
+     * @return The "Ok" button component.
+     */
     private JButton setFrame(final JFrame frame, final String... arg){
         final JPanel insertPanel = new JPanel(new GridLayout(arg.length, arg.length, 0, GAP));
         insertPanel.setBorder(BorderFactory.createEmptyBorder(GAP, 0, 0, GAP));
@@ -542,6 +557,12 @@ public class FeaturesView extends JFrame{
         return okButton;
     }
 
+    /**
+     * Displays information in a new JPanel within the specified JFrame.
+     *
+     * @param info  The information to display.
+     * @param frame The JFrame to display the information in.
+     */
     private void showInfo(final String info, final JFrame frame){
         final JPanel newPanel= new JPanel();
         
@@ -555,6 +576,12 @@ public class FeaturesView extends JFrame{
 
     }
 
+    /**
+     * Checks if all the provided JTextFields in the list are non-empty.
+     *
+     * @param fields A list of JTextFields to check.
+     * @return true if all fields are non-empty, false otherwise.
+     */
     private boolean noneEmpty(final List<JTextField> fields){
         for (JTextField jTextField : fields) {
             if(jTextField.getText().length() == 0) return false;
