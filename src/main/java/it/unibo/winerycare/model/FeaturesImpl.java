@@ -438,7 +438,7 @@ public class FeaturesImpl implements Features {
     public String getBestSellingType(int year) {
         final String query = "WITH bottiglie_vendute as ( SELECT b.Nome_tipologia AS tipologia, COUNT(*) AS numero\n" + //
                             "FROM bottiglie_di_vino b\n" + //
-                            "WHERE b.Anno = '2021' AND Giacenza = FALSE\n" + //
+                            "WHERE b.Anno = ? AND Giacenza = FALSE\n" + //
                             "GROUP BY b.Nome_tipologia)\n " + //
                             "SELECT tipologia\n" + //
                             "FROM bottiglie_vendute\n" + //
